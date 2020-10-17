@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Notas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ng-container *ngIf="!isLoaded; else showList">
+    <ion-spinner></ion-spinner>
+  </ng-container>
+  
+  <ng-template #showList>
+    <ion-list>
+      <ion-item
+        button
+        *ngFor="let note of notes"
+        routerLink="/save-note/{{note.noteId}}"
+      >
+        <ion-label>{{note.title}}</ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-template>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button routerLink="/save-note">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

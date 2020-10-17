@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Guardar nota</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <ion-list>
+      <ion-item>
+        <ion-label position="floating">Titulo</ion-label>
+        <ion-input formControlName="title"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Descripcion</ion-label>
+        <ion-textarea formControlName="description"></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label>Completada</ion-label>
+        <ion-toggle formControlName="isCompleted"></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Prioridad</ion-label>
+        <ion-select formControlName="priority" okText="OK" cancelText="Cancelar">
+          <ion-select-option value="1">Baja</ion-select-option>
+          <ion-select-option value="2">Media</ion-select-option>
+          <ion-select-option value="3">Alta</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Fecha de vencimiento</ion-label>
+        <ion-datetime formControlName="expirationDate"
+          picker-format="YYYY MMM DD hh:mm"
+          display-format="YYYY MMM DD hh:mm"></ion-datetime>
+      </ion-item>
+    </ion-list>
+    <ion-button type="submit" [disabled]="!formGroup.valid" expand="block">Guardar</ion-button>
+    <ion-button *ngIf="note && note.noteId" (click)="deleteNote()" expand="block" color="danger">Eliminar</ion-button>
+  </form>
+</ion-content>
