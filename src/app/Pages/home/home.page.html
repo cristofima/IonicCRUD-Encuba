@@ -1,6 +1,11 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Notas</ion-title>
+    <ion-item lines="none">
+      <ion-icon slot="start" name="moon"></ion-icon>
+      <ion-label>Modo Oscuro</ion-label>
+      <ion-toggle (ionChange)="changeTheme($event)" [(ngModel)]="isDarkTheme" slot="end"></ion-toggle>
+    </ion-item>
   </ion-toolbar>
 </ion-header>
 

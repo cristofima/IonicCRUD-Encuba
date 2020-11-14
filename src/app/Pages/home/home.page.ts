@@ -11,12 +11,33 @@ export class HomePage implements OnInit {
 
   notes: Note[] = [];
   isLoaded = false;
+  isDarkTheme = false;
 
   constructor(private noteService: NoteService) { }
 
   ngOnInit(): void {
+    this.checkTheme();
     this.doRefresh();
     this.initEvents();
+  }
+
+  private checkTheme(){
+    let theme = localStorage.getItem("theme");
+
+    if(theme && theme == "dark"){
+      this.isDarkTheme = true;
+    }
+  }
+
+  changeTheme($event){
+    if($event.detail.checked){
+      document.body.setAttribute('data-theme', 'dark');
+      localStorage.setItem("theme", "dark");
+    }
+    else{
+      document.body.setAttribute('data-theme', 'light');
+      localStorage.setItem("theme", "light");
+    }
   }
 
   doRefresh($event?: any){

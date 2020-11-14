@@ -15,7 +15,18 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar
   ) {
+    this.checkTheme();
     this.initializeApp();
+  }
+
+  private checkTheme(){
+    let theme = localStorage.getItem("theme");
+
+    if(theme && theme == "dark"){
+      document.body.setAttribute('data-theme', 'dark');
+    }else{
+      document.body.setAttribute('data-theme', 'light');
+    }
   }
 
   initializeApp() {
