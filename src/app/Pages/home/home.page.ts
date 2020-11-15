@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { PopoverController } from '@ionic/angular';
+import { OptionsComponent } from 'src/app/Components/options/options.component';
 import { Note } from 'src/app/Models/Note';
 import { NoteService } from '../../Services/note.service';
 
@@ -11,33 +13,22 @@ export class HomePage implements OnInit {
 
   notes: Note[] = [];
   isLoaded = false;
-  isDarkTheme = false;
 
-  constructor(private noteService: NoteService) { }
+  constructor(private noteService: NoteService, private popoverController: PopoverController) { }
 
   ngOnInit(): void {
-    this.checkTheme();
     this.doRefresh();
     this.initEvents();
   }
 
-  private checkTheme(){
-    let theme = localStorage.getItem("theme");
+  async showPopover($event) {
+    const popover = await this.popoverController.create({
+      component: OptionsComponent,
+      event: $event,
+      translucent: true
+    });
 
-    if(theme && theme == "dark"){
-      this.isDarkTheme = true;
-    }
-  }
-
-  changeTheme($event){
-    if($event.detail.checked){
-      document.body.setAttribute('data-theme', 'dark');
-      localStorage.setItem("theme", "dark");
-    }
-    else{
-      document.body.setAttribute('data-theme', 'light');
-      localStorage.setItem("theme", "light");
-    }
+    return await popover.present();
   }
 
   doRefresh($event?: any){

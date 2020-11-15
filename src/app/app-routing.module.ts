@@ -18,7 +18,11 @@ const routes: Routes = [
   {
     path: 'save-note/:id',
     loadChildren: () => import('./Pages/save-note/save-note.module').then(m => m.SaveNotePageModule)
+  },  {
+    path: 'settings',
+    loadChildren: () => import('./Pages/settings/settings.module').then( m => m.SettingsPageModule)
   },
+
 ];
 
 @NgModule({
