@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import { OptionsComponent } from 'src/app/Components/options/options.component';
 import { Note } from 'src/app/Models/Note';
+import { LoadingService } from 'src/app/Services/loading.service';
+import { MessageService } from 'src/app/Services/message.service';
 import { NoteService } from '../../Services/note.service';
 
 @Component({
@@ -14,7 +16,11 @@ export class HomePage implements OnInit {
   notes: Note[] = [];
   isLoaded = false;
 
-  constructor(private noteService: NoteService, private popoverController: PopoverController) { }
+  constructor(
+    private messageService: MessageService,
+    private loadingService: LoadingService, 
+    private noteService: NoteService, 
+    private popoverController: PopoverController) { }
 
   ngOnInit(): void {
     this.doRefresh();
@@ -58,6 +64,20 @@ export class HomePage implements OnInit {
       if(noteId){
         this.notes = this.notes.filter(x => x.noteId != noteId);
       }
+    });
+  }
+
+  async deleteNote(note: Note){
+    const loading = await this.loadingService.presentLoading('Eliminando ...');
+    await loading.present();
+
+    this.noteService.deleteNote(note.noteId).subscribe(()=>{
+      loading.dismiss();
+      this.noteService.emitDeleteSuccess(note.noteId);
+      this.messageService.presentToast(`Nota "${note.title}" eliminada`);
+    }, ()=>{
+      loading.dismiss();
+      this.messageService.presentAlert('Error', 'Hubo un problema al eliminar. Por favor intente de nuevo');
     });
   }
 
