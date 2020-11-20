@@ -4,9 +4,10 @@ import { Note } from '../../Models/Note';
 
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { NavController } from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular';
 import { MessageService } from '../../Services/message.service';
 import { LoadingService } from '../../Services/loading.service';
+import { DatePicker } from '@ionic-native/date-picker/ngx';
 
 @Component({
   selector: 'app-save-note',
@@ -19,7 +20,11 @@ export class SaveNotePage implements OnInit {
 
   formGroup: FormGroup;
 
+  isMobileWeb = true;
+
   constructor(
+    private platform: Platform,
+    private datePicker: DatePicker,
     private loadingService: LoadingService,
     private messageService: MessageService,
     private navController: NavController,
@@ -29,6 +34,8 @@ export class SaveNotePage implements OnInit {
 
   ngOnInit() {
     const params = this.actRoute.snapshot.params;
+
+    this.isMobileWeb = this.platform.is("mobileweb");
 
     this.formGroup = this.formBuilder.group({
       title: new FormControl('', Validators.required),
@@ -76,7 +83,7 @@ export class SaveNotePage implements OnInit {
       }
     }, () => {
       loading.dismiss();
-      this.messageService.presentAlert('Error', 'Hubo un problema al guardar. Por favor intente de nuevo');
+      this.messageService.presentAlert('Error', 'Hubo un problema al guardar. Por favor intente de nuevo.');
     }); 
   }
 
@@ -93,6 +100,39 @@ export class SaveNotePage implements OnInit {
       loading.dismiss();
       this.messageService.presentAlert('Error', 'Hubo un problema al eliminar. Por favor intente de nuevo');
     });
+  }
+
+  openDatePicker(){
+    if(!this.isMobileWeb){
+      let expirationDate = new Date();
+
+      if(this.formGroup.controls["expirationDate"].value){
+        expirationDate = new Date(this.formGroup.controls["expirationDate"].value);
+      }
+
+      let androidTheme = this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT;
+
+      let theme = localStorage.getItem("theme");
+      if(theme == "dark"){
+        androidTheme = this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_DARK;
+      }
+
+      this.datePicker.show({
+        date: expirationDate,
+        mode: 'date',
+        androidTheme: androidTheme
+      }).then(
+        date => {
+          if(date){
+            this.formGroup.controls["expirationDate"].setValue(date.toISOString());
+          }
+        },
+        () => {
+          
+        }
+      );
+    }
+    
   }
 
 }
