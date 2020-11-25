@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 @Component({
   selector: 'app-settings',
@@ -9,28 +10,28 @@ export class SettingsPage implements OnInit {
 
   isDarkTheme = false;
 
-  constructor() { }
+  constructor(private nativeStorage: NativeStorage) { }
 
   ngOnInit() {
     this.checkTheme();
   }
 
   private checkTheme(){
-    let theme = localStorage.getItem("theme");
-
-    if(theme && theme == "dark"){
-      this.isDarkTheme = true;
-    }
+    this.nativeStorage.getItem('theme').then((theme: string) =>{
+      if(theme == "dark"){
+        this.isDarkTheme = true;
+      }
+    });
   }
 
   changeTheme($event){
     if($event.detail.checked){
       document.body.setAttribute('data-theme', 'dark');
-      localStorage.setItem("theme", "dark");
+      this.nativeStorage.setItem("theme", "dark");
     }
     else{
       document.body.setAttribute('data-theme', 'light');
-      localStorage.setItem("theme", "light");
+      this.nativeStorage.setItem("theme", "light");
     }
   }
 

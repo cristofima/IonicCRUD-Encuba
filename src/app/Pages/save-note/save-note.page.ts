@@ -8,6 +8,7 @@ import { NavController, Platform } from '@ionic/angular';
 import { MessageService } from '../../Services/message.service';
 import { LoadingService } from '../../Services/loading.service';
 import { DatePicker } from '@ionic-native/date-picker/ngx';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 @Component({
   selector: 'app-save-note',
@@ -23,6 +24,7 @@ export class SaveNotePage implements OnInit {
   isMobileWeb = true;
 
   constructor(
+    private nativeStorage: NativeStorage,
     private platform: Platform,
     private datePicker: DatePicker,
     private loadingService: LoadingService,
@@ -112,27 +114,28 @@ export class SaveNotePage implements OnInit {
 
       let androidTheme = this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT;
 
-      let theme = localStorage.getItem("theme");
-      if(theme == "dark"){
-        androidTheme = this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_DARK;
-      }
-
-      this.datePicker.show({
-        date: expirationDate,
-        mode: 'date',
-        androidTheme: androidTheme
-      }).then(
-        date => {
-          if(date){
-            this.formGroup.controls["expirationDate"].setValue(date.toISOString());
+      const openDT = ()=>{
+        this.datePicker.show({
+          date: expirationDate,
+          mode: 'date',
+          androidTheme: androidTheme
+        }).then(
+          date => {
+            if(date){
+              this.formGroup.controls["expirationDate"].setValue(date.toISOString());
+            }
           }
-        },
-        () => {
-          
+        );
+      };
+
+      this.nativeStorage.getItem('theme').then((theme: string) =>{
+        if(theme == "dark"){
+          androidTheme = this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_DARK;
         }
-      );
+        
+        openDT();
+      });
     }
-    
   }
 
 }
